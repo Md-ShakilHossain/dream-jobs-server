@@ -26,11 +26,12 @@ async function run() {
     // await client.connect();
     const database = client.db("DreamJobs");
     const allJobsCollection = database.collection("allJobs");
+    const appliedJobsCollection = database.collection("appliedJobs");
 
-    app.get('/alljobs', async(req, res) => {
-        const cursor = allJobsCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/alljobs', async (req, res) => {
+      const cursor = allJobsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     app.get('/alljobs/:id', async (req, res) => {
@@ -38,6 +39,13 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const job = await allJobsCollection.findOne(query);
       res.send(job);
+    });
+
+    app.post('/appliedJobs', async (req, res) => {
+      const jobWithApplicant = req.body;
+      console.log(jobWithApplicant);
+      const result = await appliedJobsCollection.insertOne(jobWithApplicant);
+      res.send(result);
     });
 
 
@@ -55,9 +63,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('DreamJobs server is working perfectly');
-  })
-  
-  app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`)
-  })
+  res.send('DreamJobs server is working perfectly');
+})
+
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`)
+})
