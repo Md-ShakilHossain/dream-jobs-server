@@ -41,6 +41,12 @@ async function run() {
       res.send(job);
     });
 
+    app.get('/appliedJobs', async (req, res) => {
+      const cursor = appliedJobsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post('/appliedJobs', async (req, res) => {
       const jobWithApplicant = req.body;
       console.log(jobWithApplicant);
