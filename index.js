@@ -42,8 +42,12 @@ async function run() {
     });
 
     app.get('/appliedJobs', async (req, res) => {
-      const cursor = appliedJobsCollection.find();
-      const result = await cursor.toArray();
+      console.log(req.query.applicantEmail);
+      let query = {};
+      if (req.query?.applicantEmail){
+        query = { applicantEmail: req.query.applicantEmail};
+      }
+      const result = await appliedJobsCollection.find(query).toArray();
       res.send(result);
     });
 
