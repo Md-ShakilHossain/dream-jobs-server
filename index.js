@@ -47,6 +47,13 @@ async function run() {
       res.send(result);
     });
 
+    app.post('/alljobs', async (req, res) => {
+      const job = req.body;
+      console.log(job);
+      const result = await allJobsCollection.insertOne(job);
+      res.send(result);
+    });
+
     app.post('/appliedJobs', async (req, res) => {
       const jobWithApplicant = req.body;
       console.log(jobWithApplicant);
