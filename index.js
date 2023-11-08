@@ -29,8 +29,13 @@ async function run() {
     const appliedJobsCollection = database.collection("appliedJobs");
 
     app.get('/alljobs', async (req, res) => {
-      const cursor = allJobsCollection.find();
-      const result = await cursor.toArray();
+      console.log(req.query);
+
+      let query = {};
+      if (req.query?.addedBy){
+        query = { addedBy: req.query.addedBy};
+      }
+      const result = await allJobsCollection.find(query).toArray();
       res.send(result);
     });
 
