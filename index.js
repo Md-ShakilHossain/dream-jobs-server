@@ -35,6 +35,11 @@ async function run() {
       if (req.query?.addedBy){
         query = { addedBy: req.query.addedBy};
       }
+
+      if(req.query?.addedBy && req.query?.id){
+        query = { _id: new ObjectId(req.query.id)};
+      }
+
       const result = await allJobsCollection.find(query).toArray();
       res.send(result);
     });
@@ -67,6 +72,43 @@ async function run() {
       const jobWithApplicant = req.body;
       console.log(jobWithApplicant);
       const result = await appliedJobsCollection.insertOne(jobWithApplicant);
+      res.send(result);
+    });
+
+    app.put('/alljobs/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedInformation = req.body;
+      const information = {
+        $set: {
+          jobBanner: updatedInformation.jobBanner,
+          jobTitle: updatedInformation.jobTitle,
+          authorName: updatedInformation.authorName,
+          authorEmail: updatedInformation.authorEmail,
+          category: updatedInformation.category,
+          shortDescription: updatedInformation.shortDescription,
+          salaryRange: updatedInformation.salaryRange,
+          postingDate: updatedInformation.postingDate,
+          deadline: updatedInformation.deadline,
+          appliedNumber: updatedInformation.appliedNumber,
+          addedBy: updatedInformation.addedBy
+        }
+      }
+
+      const result = await allJobsCollection.updateOne(query, information, options);
+      res.send(result);
+
+    });
+
+
+    app.delete('/alljobs', async (req, res) => {
+      console.log(req.query);
+
+      if(req.query?.addedBy && req.query?.id){
+        query = { _id: new ObjectId(req.query.id)};
+      }
+      const result = await allJobsCollection.deleteOne(query);
       res.send(result);
     });
 
